@@ -1,0 +1,58 @@
+0036517834
+================
+
+=== UNARCHIVE AND STRUCTURE ===
+OK!
+
+=== COMPILE ===
+Skipping (python)
+
+=== EVALUATION ===
+
+== A-STAR ==
+  Passed 5 / 5 tests.
+
+== BFS ==
+  Passed 3 / 3 tests.
+
+== HEURISTIC-CONSISTENT ==
+  Passed 5 / 5 tests.
+
+== HEURISTIC-OPTIMISTIC ==
+  Passed 4 / 5 tests.
+
+== UCS ==
+  Passed 3 / 3 tests.
+
+=== TOTAL RESULTS ===
+20 / 21 tests passed. (95.23809523809524%)
+
+0123456789
+================
+
+=== UNARCHIVE AND STRUCTURE ===
+OK!
+
+=== COMPILE ===
+Skipping (python)
+
+=== EVALUATION ===
+
+== A-STAR ==
+  Passed 0 / 5 tests.
+
+== BFS ==
+  Passed 0 / 3 tests.
+
+== HEURISTIC-CONSISTENT ==
+  Passed 0 / 5 tests.
+
+== HEURISTIC-OPTIMISTIC ==
+  Passed 0 / 5 tests.
+
+== UCS ==
+  Passed 0 / 3 tests.
+
+=== TOTAL RESULTS ===
+0 / 21 tests passed. (0.0%)
+

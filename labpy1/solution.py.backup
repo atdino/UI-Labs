@@ -1,0 +1,108 @@
+#!/usr/bin/python
+
+import argparse
+
+def configure_parser_and_get_args():
+    parser = argparse.ArgumentParser(description='Laboratorijska vježba 1, UUUI, Ajdin Trejić')
+    parser.add_argument('--alg', metavar='algorithm', required=True, type=str, help='algorithm type: bfs, ucs or astar')
+    parser.add_argument('--ss', metavar='path', type=str, required=True, help='path')
+    parser.add_argument('--h', metavar='path', type=str, help='heuristic path')
+    parser.add_argument('--check-optimistic', action='store_true')
+    parser.add_argument('--check-consistent', action='store_true')
+    return parser.parse_args()
+
+def bfs(ss_path):
+    print('bfs alg: path: ' + ss_path)
+    ss_file = open(ss_path, 'r')
+
+    ss_file.readline() # skips the first hashtag
+    start_node = ss_file.readline().rstrip() # returns the start node
+    end_node = ss_file.readline().rstrip() # returns the end node
+
+
+    ss_dict = {}
+
+    for line in ss_file:
+        line = line.rstrip().split(' ') # clean the trailing newline and make an array
+
+        key = line[0][:-1]
+        ss_dict[key] = {}
+    
+        node_entries = line[1:]
+
+        for entry in node_entries:
+            entry = entry.split(',')
+            next_node = entry[0]
+            next_node_distance = entry[1]
+            
+            ss_dict[key][next_node] = next_node_distance
+
+    print(ss_dict)
+    print(start_node)
+    print(end_node)
+
+    queue = []
+    queue.append(start_node)
+
+    visited = []
+    visited.append(start_node)
+
+    while queue:
+        print('#'*10 + ' Queue: ' + str(queue))
+        #print(' Visited: ' + str(visited))
+        node = queue.pop(0)
+        if end_node == node:
+            print(visited)
+            break
+        visited.append(node)
+
+        #Get child nodes
+        child_nodes = ss_dict[node] #typecast to list
+        while (len(child_nodes) != 0):
+
+            #get shortest distance
+            distances_string = list(child_nodes.values())
+            distances_int = [int(i) for i in distances_string]
+            min_distance = min(distances_int)
+        
+            closest_child_nodes = []
+
+            for node_name, node_distance in child_nodes.items():
+                if int(node_distance) == min_distance:
+                    closest_child_nodes.append(node_name)
+                        
+            #if not len(closest_child_nodes) == 1:
+            #    print(child_nodes)
+            #    raise Exception('fixaj ono za alphabetical sorting, ima previše stvari u ovom child nodes')
+
+            #sort Alphabetically
+            closest_child_nodes = sorted(closest_child_nodes)
+
+            for closest_node in closest_child_nodes:
+                #print(closest_node)
+                child_nodes.pop(closest_node)
+
+                if closest_node not in visited:
+                    next_node = closest_node
+                    if next_node not in queue:
+                        queue.append(next_node)
+
+def ucs():
+    a=0
+
+def astar():
+    a=0
+
+def main():
+    args = configure_parser_and_get_args()
+
+    if (args.alg == 'bfs'):
+        bfs(args.ss)
+    elif (args.alg == 'ucs'):
+        ucs()
+    elif (args.alg == 'astar'):
+        astar()
+
+if __name__ == '__main__':
+    main()
+
