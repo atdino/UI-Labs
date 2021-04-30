@@ -4,7 +4,6 @@ import argparse
 
 def configure_parser_and_get_args():
     parser = argparse.ArgumentParser(description='Laboratorijska vježba 2, UUUI, Ajdin Trejić')
-    #had to do this because the lab instructions are weird✋
     parser.add_argument('first_arg', type=str)
     parser.add_argument('second_arg', type=str)
     return parser.parse_args()
@@ -47,10 +46,51 @@ def select_clauses(clauses: set, new_clauses: set):
     for clause in clauses:
         for new_clause in new_clauses:
             result.add((clause, new_clause))
-
-    exit(0)
     return result
 
+def is_negated(clause: str):
+    if (clause[0] == '~'):
+        return True
+    else:
+        return False
+
+def is_tauntology(c1: str, c2:str):
+    if ('~' + c1 == c2 or '~' + c2 == c1):
+        return True
+    else:
+        return False
+
+def pl_resolve(c1: str, c2: str):
+    c1_list = c1.split()
+    c2_list = c2.split()
+
+    #remove or sign 
+    while 'v' in c1_list: c1_list.remove('v')    
+    while 'v' in c2_list: c2_list.remove('v')    
+
+
+    clauses_to_be_resolved = c1_list + c2_list
+
+    number_of_clauses = len(clauses_to_be_resolved)
+
+    clauses_to_be_removed = []
+
+    for i in range(number_of_clauses):
+        for j in range(number_of_clauses):
+            #print(clauses_to_be_resolved[i], clauses_to_be_resolved[j])
+            if is_tauntology(clauses_to_be_resolved[i], clauses_to_be_resolved[j]):
+                if clauses_to_be_resolved[i] not in clauses_to_be_removed:
+                    clauses_to_be_removed.append(clauses_to_be_resolved[i])
+                if clauses_to_be_resolved[j] not in clauses_to_be_removed:
+                    clauses_to_be_removed.append(clauses_to_be_resolved[j])
+
+    for clause in clauses_to_be_removed:
+        if clause in clauses_to_be_resolved:
+            clauses_to_be_resolved.remove(clause)
+    #print(clauses_to_be_resolved)
+    #print(clauses_to_be_removed)
+    result = clauses_to_be_resolved
+    return result
 
 def pl_resolution(F: set, G: str):
     clauses = set(F) # creates a set of clauses
@@ -58,24 +98,30 @@ def pl_resolution(F: set, G: str):
     conclusion = None
 
     goal = negate_term(G)
+
     new_clauses.add(goal)
 
     
     while True:
+        print('#'*32)
+        print('for loop: clauses= ' + str(clauses) + ', new_clauses= ' + str(new_clauses))
         for [c1, c2] in select_clauses(clauses, new_clauses):
             resolvents = pl_resolve(c1, c2) #this should be a list since it requires a search
 
-            if NIL in resolvents:
+            if 'NIL' in resolvents:
                 conclusion = True
                 break
+            print(resolvents)
 
-            new_clauses.add(resolvents)
+
+            for resolvent in resolvents:
+                new_clauses.add(resolvent)
 
         if new_clauses.issubset(clauses):
             conclusion = False
             break
 
-        clauses = clauses.add(new) 
+        clauses = clauses.add(new_clauses) 
 
 def main():
     args = configure_parser_and_get_args()
