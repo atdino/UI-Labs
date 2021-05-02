@@ -10,13 +10,13 @@ Skipping (python)
 === EVALUATION ===
 
 === TOTAL RESULTS ===
-20 / 25 tests passed. (80.0%)
+25 / 25 tests passed. (100.0%)
 
 == RESOLUTION ==
   Passed 20 / 20 tests.
 
 == COOKING ==
-  Passed 0 / 5 tests.
+  Passed 5 / 5 tests.
 0123456789
 ================
 

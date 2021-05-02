@@ -147,10 +147,56 @@ def pl_resolve(c1: str, c2: str):
     #print('pl_resolve returning: ', result)
     return result
 def print_path(counter: int, found_by_dict: str):
-    for entry in found_by_dict:
-        if entry[0] <= counter:
+    #for entry in found_by_dict:
+    #    if entry[0] <= counter:
+    #        continue
+    #    print(str(entry[0]) + '. ' + str(entry[1]) + ' (' + str(entry[2]) + ', ' + str(entry[3]) + ')')
+    length = len(found_by_dict)
+
+    nil_entry = found_by_dict[-1]
+    stack = []
+    stack.append(nil_entry)
+    
+    result_list = []
+    while stack:
+        parent_element = stack.pop()
+        if parent_element[2] == 0:
             continue
-        print(str(entry[0]) + '. ' + str(entry[1]) + ' (' + str(entry[2]) + ', ' + str(entry[3]) + ')')
+        child1_index = parent_element[2] - 1
+        child2_index = parent_element[3] - 1
+        
+        stack.append(found_by_dict[child1_index])
+        stack.append(found_by_dict[child2_index])
+        entry= parent_element
+
+        result_list.append((str(entry[0]) + '. ' + str(entry[1]) + ' (' + str(entry[2]) + ', ' + str(entry[3]) + ')'))
+
+    result_list.reverse()
+
+    for entry in result_list:
+        print(entry)
+def clear_redundant_clauses(clauses: set):
+    to_remove = set()
+    if len(clauses) == 0:
+        return clauses
+    else:
+        for clause in clauses:
+            for clause2 in clauses:
+                if clause != clause2:
+                    clause1_list= clause.split(' v ')
+                    clause2_list= clause2.split(' v ')
+                    if set(clause1_list).issubset(clause2_list):
+                        to_remove.add(clause2)
+                    if set(clause2_list).issubset(clause1_list):
+                        to_remove.add(clause)
+        for clause in clauses:
+            if is_tauntology(clause):
+                to_remove.add(clause)
+    for c in to_remove:
+        clauses.remove(c)
+    return clauses
+        
+
 
 def pl_resolution(F: set, G: str):
     clauses = set(F) # creates a set of clauses
@@ -173,17 +219,18 @@ def pl_resolution(F: set, G: str):
             counter += 1
             print(str(counter) + '. ' + G)
             found_by_dict.append([counter, negate_term(goal), 0, 0])
-        print('#'*15)
+        print('='*15)
     else:
         new_clauses.add(negate_term(G))
         counter += 1
         print(str(counter) + '. ' + negate_term(G))
         found_by_dict.append([counter, negate_term(G), 0, 0])
-        print('#'*15)
+        print('='*15)
 
 
     original_counter = counter
     while new_clauses:
+        new_clauses = clear_redundant_clauses(new_clauses)
         #print('#'*32)
         #print('for loop: clauses= ' + str(clauses) + ', new_clauses= ' + str(new_clauses))
         new_clause = new_clauses.pop()
@@ -233,6 +280,8 @@ def pl_resolution(F: set, G: str):
     if conclusion:
         print_path(original_counter, found_by_dict)
     print_conclusion(conclusion, G)
+
+
 def main():
     args = configure_parser_and_get_args()
 
@@ -243,7 +292,28 @@ def main():
     if args.list_args[0] == 'resolution':
         pl_resolution(F, G)
     elif args.list_args[0] == 'cooking':
+        F = set(file_lines)
         file_lines_input = load_file_lines(args.list_args[2])
+        for command in file_lines_input:
+            print('\nUser\'s command: ' + command)
+            command_type = command[-1]
+            command_sanitized = command[:-2]
+            
+            if command_type == '?':
+                G = command_sanitized
+                pl_resolution(F, G)
+            elif command_type == '+':
+                F.add(command_sanitized)
+                print('Added ' + command_sanitized)
+            elif command_type == '-':
+                try:
+                    F.remove(command_sanitized)
+                    print('Removed ' + command_sanitized)
+                except:
+                    print('Cant remove ' + command_sanitized)
+               
+
+                
         #b dio zadatka
         #print('b zadatak')
         exit(0)
