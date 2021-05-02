@@ -1,0 +1,271 @@
+0123456789
+================
+
+=== UNARCHIVE AND STRUCTURE ===
+OK!
+
+=== COMPILE ===
+Skipping (python)
+
+=== EVALUATION ===
+
+=== TOTAL RESULTS ===
+0 / 25 tests passed. (0.0%)
+
+== RESOLUTION ==
+  Passed 0 / 20 tests.
+
+- Failed test: python solution.py resolution resolution_heldout_small.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+a is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_small_2.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c v b is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_tautology.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_tautology_2.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_tautology_3.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+a is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_tautology_4.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+a v b is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_large_chain.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+g is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_heldout_goal_isnegated.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+~c is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_small_example.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_ai.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+prolaz_predmeta is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_chicken_alfredo_nomilk.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+chicken_alfredo is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_chicken_alfredo.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+chicken_alfredo is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_chicken_broccoli_alfredo_big.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+chicken_broccoli_alfredo is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_coffee.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+coffee is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_coffee_noheater.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+coffee is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_coffee_or_tea.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+coffee v tea is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_coffee_or_tea_nopowder.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+coffee v tea is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_small_example_2.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_small_example_3.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py resolution resolution_small_example_4.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+c v b is true
+--> Complete obtained output:
+Solving
+
+== COOKING ==
+  Passed 0 / 5 tests.
+
+- Failed test: python solution.py cooking cooking_heldout_large_chain.txt cooking_heldout_large_chain_input.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+b is true
+c is true
+d is true
+e is true
+f is true
+g is true
+b is unknown
+b is true
+c is unknown
+c is true
+d is unknown
+d is true
+e is unknown
+e is true
+f is unknown
+f is true
+g is unknown
+g is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py cooking cooking_coffee.txt cooking_coffee_input.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+water is true
+hot_water is true
+coffee is true
+hot_water is unknown
+coffee is unknown
+coffee is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py cooking cooking_chicken_alfredo.txt cooking_chicken_alfredo_input.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+alfredo_sauce is true
+chicken_alfredo is true
+chicken_alfredo is unknown
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py cooking cooking_chicken_alfredo_nomilk.txt cooking_chicken_alfredo_nomilk_input.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+alfredo_sauce is unknown
+alfredo_sauce is true
+alfredo_sauce is unknown
+chicken_alfredo is true
+--> Complete obtained output:
+Solving
+
+- Failed test: python solution.py cooking cooking_chicken_broccoli_alfredo_big.txt cooking_chicken_broccoli_alfredo_big_input.txt
+- Mismatch with field: CONCLUSION
+-> Obtained output:
+
+-> Expected output:
+chicken_broccoli_alfredo is true
+--> Complete obtained output:
+Solving
