@@ -5,6 +5,7 @@ import math
 import copy
 
 tree = dict()
+result = ''
 
 def configure_parser_and_get_args():
     parser = argparse.ArgumentParser(description='Laboratorijska vježba 3, UUUI, Ajdin Trejić')
@@ -264,7 +265,8 @@ def pretty_autograder(d: dict, r: str, c: int, prefix:str):
             print()
 
 def test_prediction(line: list, tree:dict, root: str, attributes: list):
-    print(' ', end='')
+    global result
+    result += ' ' 
     #print('\nTesting prediction:', end=', ')
     #print('line: ' + str(line), end=', ')
     #print('tree: ' + str(tree), end=', ')
@@ -272,6 +274,7 @@ def test_prediction(line: list, tree:dict, root: str, attributes: list):
     #print('root: ' + str(root))
 
     def recursive_prediction(p: str, line: list):
+        global result
         #print('recc: ', p, line)
         atr_index = attributes.index(p)
         atr_value = line[atr_index]
@@ -281,13 +284,14 @@ def test_prediction(line: list, tree:dict, root: str, attributes: list):
         if next in tree.keys():
             recursive_prediction(next, line)
         else:
-            print(next, end='')
+            result += next
 
     recursive_prediction(root, line)
     #print('attributes: ' + str(attributes))
     
 
 def main():
+    global result
     args = configure_parser_and_get_args()
     file_lines = load_file_lines(args.list_args[0])
 
@@ -311,7 +315,41 @@ def main():
 
     for line in test_file_lines:
         test_prediction(copy.deepcopy(line), tree, root, attributes)
+    print(result)
+   
+    test_true_results = list()
+    for line in test_file_lines:
+        test_true_results.append(line[-1])
+    
+    result = result.split()
+    print(result)
+    print(test_true_results)
+    
+    accurate = 0
+    for i in range(len(result)):
+        if result[i] == test_true_results[i]:
+            accurate += 1
 
+    print('[ACCURACY]: %.5f' % (accurate/len(result)))
+
+
+    print('[CONFUSION_MATRIX]:')
+    size = len(set(result + test_true_results))
+    matrix = [[0 for x in range(size)] for y in range(size)] 
+
+    outputs = list(set(result + test_true_results))
+    outputs.sort()
+    for i in range(len(result)):
+        if result[i] == test_true_results[i]:
+            j = outputs.index(result[i])
+            matrix[j][j] += 1
+        if result[i] != test_true_results[i]:
+            j = outputs.index(result[i])
+            k = outputs.index(test_true_results[i])
+            matrix[k][j] += 1
+    
+    for row in matrix:
+        print(*row, sep=' ')
 
 
 if __name__ == '__main__':
