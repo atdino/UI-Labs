@@ -1,0 +1,130 @@
+#!/usr/bin/python
+
+import argparse
+import math
+
+def configure_parser_and_get_args():
+    parser = argparse.ArgumentParser(description='Laboratorijska vježba 3, UUUI, Ajdin Trejić')
+    parser.add_argument('list_args', type=str, nargs='*')
+    return parser.parse_args()
+
+def load_file_lines(file_path):
+    file_lines = []
+    with open(file_path) as f:
+        for line in f:
+            line = line.rstrip()
+            file_lines.append(line.lower().split(','))
+    return file_lines
+
+def get_entropy(data: dict):
+    """
+    funtion requires a data of type dict, e.g. data = {'no': 5, 'yes': 9}
+    """
+
+    #calculating probability
+    total_occurances = sum(list(data.values()))
+    probabilties_of_outcomes = list()
+    for key in data.keys():
+        occurances_by_outcome = data[key]
+        probability_of_occurance = occurances_by_outcome/total_occurances
+        probabilties_of_outcomes.append(probability_of_occurance)
+
+    #calculating entropy
+    entropy = 0
+    for probability in probabilties_of_outcomes:
+        entropy += -1 * probability * math.log(probability, 2) # base is 2
+
+    return entropy
+
+def get_starting_entropy(data: list):
+    outcomes = list() # contains a list of outcomes, if multiple outcomes occur, only 1 is stored, i could have used a set but sets aren't ordered
+    for entry in data:
+        outcome = entry[-1]
+        if outcome not in outcomes:
+            outcomes.append(outcome)
+
+    times_outcome_happend = dict()
+    for entry in data:
+        outcome = entry[-1]
+        if outcome not in times_outcome_happend:
+            times_outcome_happend[outcome] = 1
+        else:
+            times_outcome_happend[outcome] += 1
+    
+    entropy = get_entropy(times_outcome_happend)
+    return entropy
+
+def get_information_gain(data: list, attribute_index: int)
+    print('Finding information gain for: ' + str(attribute_index)  )
+    starting_entropy = get_starting_entropy(data)
+    print('starting_entropy: ' + str(starting_entropy))
+
+    #get all possible values
+    possible_values = list()
+    for entry in data:
+        possible_values.append(entry[attribute_index])
+
+    possible_values = list(dict.fromkeys(possible_values)) # remove duplicates
+    
+    for possible_value in possible_values:
+        #to find entropy for specific attribute value i have to construct data required by get_entropy function
+        data_to_calc_entropy = list()
+        for entry in data:
+            if entry[attribute_index] == possible_value:
+                data_to_calc_entropy.append(entry[-1])
+
+        #put it in a dict to match the expected data for get_entropy
+        data_as_dict = dict()
+        for value in data_to_calc_entropy:
+            if value not in data_as_dict:
+                data_as_dict[value] = 1
+            else:
+                data_as_dict[value] += 1
+     
+        attribute_entropy = get_entropy(data_as_dict)
+        print('Information gain for: ' + str(attribute_index) + ' = ' + str(possible_value) +  ' is: ' + str(attribute_entropy))
+    return attribute_entropy
+    
+
+def get_average_information():
+    entropy = get_entropy()
+    information_gain = get_information_gain()
+    gain = entropy - information_gain
+    return gain
+
+class Model:
+    test = 'test'
+
+    def __init__(self):
+        self.test='test2'
+
+    def fit():
+        test='test'
+
+    def predict():
+        test='test'
+
+#def id3(D: list, D_parent: list, X: list, y: str):
+#    if not D: #if its empty
+#        v = ??  
+#        return Leaf(v)
+    
+
+def main():
+    args = configure_parser_and_get_args()
+    file_lines = load_file_lines(args.list_args[0])
+
+    attributes = file_lines[0]
+    print('attributes: ' + str(attributes))
+    data = file_lines[1:]
+
+    starting_entropy = get_starting_entropy(data)
+    print('starting_entropy: ' + str(starting_entropy))
+    
+    attribute_index = 2
+    information_gain = get_information_gain(data, attribute_index)
+    
+    model = Model()
+
+if __name__ == '__main__':
+    main()
