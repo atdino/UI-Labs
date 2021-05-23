@@ -9,10 +9,11 @@ result = ''
 
 
 class Node:
+    attribute = None
     paths = dict()
 
 class Leaf:
-    value = None
+    attribute = None
 
 def configure_parser_and_get_args():
     parser = argparse.ArgumentParser(description='Laboratorijska vježba 3, UUUI, Ajdin Trejić')
@@ -149,7 +150,7 @@ class Model:
         test='test'
 
 def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:int):
-    print('\n#### ID3', y, z)
+    #print('\n#### ID3', y, z)
     global tree
 
     #if y == 'D':
@@ -170,6 +171,8 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:i
                 outcomes[outcome] += 1
         return_data = dict()
         return_data['node'] = max(outcomes, key=outcomes.get)
+        print('privjeri ako je return data u dobrom formatuuuuuuuuu idem na exit 173')
+        exit(0)
         return return_data # leaf
 
     #if all outcomes are the same
@@ -180,10 +183,9 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:i
             done = False
 
     if done:
-        return_data = dict()
-        return_data['node'] = comparator
-        #print(return_data, y, z)
-        return return_data
+        leaf = Leaf()
+        leaf.attribute = comparator
+        return leaf
 
     if len(attributes) == 1:
         outcomes = dict()
@@ -193,18 +195,15 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:i
                 outcomes[outcome] = 1
             else:
                 outcomes[outcome] += 1
-        return_data = dict()
-        return_data['node'] = attributes[0]
-        return_data['paths'] = dict()
+
+        node = Node()
+        node.attribute = attributes[0]
         for line in data:
             k, v = line[0], line[-1]
-            #print(k, v)
-            return_data['paths'][k] = v
-        if y == 'D':
-            #print('data', data)
-            #print('return_data paths', return_data['paths'])
-            exit(0)
-        return  return_data
+            leaf = Leaf()
+            leaf.attribute = v
+            node.paths[k] = leaf
+        return  node
 
 
     information_gain_dict = dict()
@@ -236,80 +235,57 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:i
     subtrees = list()
     for child_attribute in information_gain_dict[max_information_key]['entropy_dict'].keys():
         new_data = filter_data(copy.deepcopy(data), max_information_index, child_attribute)
-
-        result_raw = id3(copy.deepcopy(new_data), copy.deepcopy(data), list(attributes), max_information_key, child_attribute, depth)
-        result = result_raw['node']
         
-        #if 'paths' in result_raw:
-        #    #print('tree', tree)
-        #    #print('result_raw[\'paths\']', result_raw['paths'])
-        #    if result_raw['node'] == 'D':
-        #        print(result_raw)
-        #        print('banana')
-        #        if str(result_raw) != "{'node': 'D', 'paths': {'True': 'True', 'False': 'False'}}":
-        #            exit(0)
-        #    if result_raw['node'] not in tree:
-        #        tree[result_raw['node']] = dict()
-        #    tree[result_raw['node']].update(result_raw['paths'])
-
-        if 'paths' in result_raw:
-            if result_raw['node'] not in tree:
-                tree[result_raw['node']] = dict()
-                tree[result_raw['node']] = result_raw['paths']
-        
-        subtrees.append(child_attribute + ' -> ' + result)
+        node = id3(copy.deepcopy(new_data), copy.deepcopy(data), list(attributes), max_information_key, child_attribute, depth)
+        subtrees.append([child_attribute, node])
     #print(max_information_key, subtrees)
-    return_data = dict()
-    return_data['node'] = max_information_key
-    return_data['paths'] = dict()
+    node = Node()
+    node.attribute = max_information_key
+    node.paths = dict()
     for subtree in subtrees:
-        k, v = subtree.split(' -> ')
-        return_data['paths'][k] = v
-    return return_data
+        k, v = subtree[0], subtree[1]
+        #print(k, v)
+        node.paths[k] = v
+    return node
     
-#kopirao sam ovih 7 linija ispod sa stackoverflowa, sluzi mi cisto za debugging
-def pretty(d, indent=0):
-    for key, value in d.items():
-        print('\t' * indent + str(key))
-        if isinstance(value, dict):
-            pretty(value, indent+1)
-        else:
-            print('\t' * (indent+1) + str(value))
-
-def pretty_autograder(d: dict, r: str, c: int, prefix:str):
-    #print(d, r, c)
-    for k, v in d[r].items():
-        output = prefix + str(c) + ':' + r + '=' + k +' '
-        if v in d.keys():
-            pretty_autograder(d, v, c+1, output)
-        else:
+def pretty_autograder(n: Node, c: int, prefix: str):
+    for k, v in n.paths.items():
+        output = prefix + str(c) + ':' + n.attribute + '=' + k +' '
+        if isinstance(v, Node):
+            pretty_autograder(v, c+1, output)
+        elif isinstance(v, Leaf):
             print(output, end='')
-            print(v, end='')
+            print(v.attribute, end='')
             print()
+        else:
+            print('nesto tu nije ni node ni leaf linija 262')
+            exit(0)
 
-def test_prediction(line: list, tree:dict, root: str, attributes: list):
+def test_prediction(line: list, root_node: Node, attributes: list):
     global result
     result += ' ' 
     #print('\nTesting prediction:', end=', ')
-    #print('line: ' + str(line), end=', ')
-    #print('tree: ' + str(tree), end=', ')
+    #print('root node: ' + root_node.attribute, end='\n')
+    #print('root node paths: ' + str(root_node.paths), end='\n')
     #print('atr: ' + str(attributes), end=', ')
-    #print('root: ' + str(root))
 
-    def recursive_prediction(p: str, line: list):
+    def recursive_prediction(n: Node, line: list):
         global result
-        #print('recc: ', p, line)
-        atr_index = attributes.index(p)
+        #print('recc: ', n.attribute, line)
+        atr_index = attributes.index(n.attribute)
         atr_value = line[atr_index]
         #print('indx: ', atr_index)
         #print('val: ', atr_value)
-        next = tree[p][atr_value]
-        if next in tree.keys():
+        next = n.paths[atr_value]
+        if isinstance(next, Node):
             recursive_prediction(next, line)
+        elif isinstance(next, Leaf):
+            result += next.attribute
         else:
-            result += next
+            print('tip je kriv linija 286')
+            exit(0)
 
-    recursive_prediction(root, line)
+    recursive_prediction(root_node, line)
     #print('attributes: ' + str(attributes))
     
 
@@ -326,25 +302,24 @@ def main():
     attributes = file_lines[0][:-1] # -1 is to cut off the last element (outcome)
     #print('attributes: ' + str(attributes))
     data = file_lines[1:]
+    
+    root_node = id3(data, data, list(attributes), 'ROOT', 'ROOT', depth) # start the algorithm
+    #print('#################')
+    #print(root_node.attribute)
+    #print(root_node.paths)
+    #print(root_node.paths['False'].attribute)
+    #print('#################')
+    #exit(0)
 
-    result_raw = id3(data, data, list(attributes), 'ROOT', 'ROOT', depth) # start the algorithm
-
-    if 'paths' in result_raw: # this is required only for adding the root node to the tree
-        tree[result_raw['node']] = result_raw['paths']
-
-    root = result_raw['node']
-	 
-    pretty(tree)
-    print(tree)
     print('[BRANCHES]:')
-    pretty_autograder(tree, root, 1, '')
+    pretty_autograder(root_node, 1, '')
 
 
     test_file_lines = load_file_lines(args.list_args[1])[1:]
     print('[PREDICTIONS]:', end='')
 
     for line in test_file_lines:
-        test_prediction(copy.deepcopy(line), tree, root, attributes)
+        test_prediction(copy.deepcopy(line), root_node, attributes)
     
    
     test_true_results = list()
