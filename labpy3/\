@@ -1,0 +1,17 @@
+njihovo:
+
+1:A=False 2:B=True 3:D=True False
+1:A=False 2:B=True 3:D=False True
+OK2: 1:A=False 2:B=False 3:C=False 4:D=True False
+1:A=False 2:B=False 3:C=False 4:D=False True 
+1:A=False 2:B=False 3:C=True False
+OK1:  1:A=True True 
+
+moje:
+OK3: 1:A=False 2:B=False 3:C=False 4:D=False True 
+OK2: 1:A=False 2:B=False 3:C=False 4:D=True False
+1:A=False 2:B=False 3:C=True False
+1:A=False 2:B=True 3:D=False False
+1:A=False 2:B=True 3:D=True True 
+OK1: 1:A=True True 
+

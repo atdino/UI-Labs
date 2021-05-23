@@ -7,6 +7,13 @@ import copy
 tree = dict()
 result = ''
 
+
+class Node:
+    paths = dict()
+
+class Leaf:
+    value = None
+
 def configure_parser_and_get_args():
     parser = argparse.ArgumentParser(description='Laboratorijska vježba 3, UUUI, Ajdin Trejić')
     parser.add_argument('list_args', type=str, nargs='*')
@@ -17,7 +24,7 @@ def load_file_lines(file_path):
     with open(file_path) as f:
         for line in f:
             line = line.rstrip()
-            file_lines.append(line.lower().split(','))
+            file_lines.append(line.split(','))
     return file_lines
 
 def get_entropy(data: dict):
@@ -141,14 +148,19 @@ class Model:
     def predict():
         test='test'
 
-def id3(data: list, data_parent: list, attributes: list, y: str, z: str): #ne koristim y jer mi ne treba
-    #print('\n\n#### ID3', attributes, y, z)
+def id3(data: list, data_parent: list, attributes: list, y: str, z: str, depth:int):
+    print('\n#### ID3', y, z)
     global tree
+
+    #if y == 'D':
+        #print(data)
+
+    if depth != -2:
+        depth =  depth - 1
     
     
     #if its empty take the most probable outcome from the original data
-    if not data_parent: 
-        v = None
+    if not data_parent or depth == -1: 
         outcomes = dict()
         for entry in data_parent:
             outcome = entry[-1]
@@ -160,19 +172,6 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str): #ne ko
         return_data['node'] = max(outcomes, key=outcomes.get)
         return return_data # leaf
 
-    if len(attributes) == 0:
-        outcomes = dict()
-        for entry in data_parent:
-            outcome = entry[-1]
-            if outcome not in outcomes:
-                outcomes[outcome] = 1
-            else:
-                outcomes[outcome] += 1
-        print(outcomes)
-        print('aaa ne ovdje')
-        exit(0)
-        return  'leaf ' + max(outcomes, key=outcomes.get) # leaf
-
     #if all outcomes are the same
     comparator = data[0][-1]
     done = True
@@ -181,23 +180,44 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str): #ne ko
             done = False
 
     if done:
-        #print(comparator)
-        #print('byebye')
         return_data = dict()
         return_data['node'] = comparator
+        #print(return_data, y, z)
         return return_data
+
+    if len(attributes) == 1:
+        outcomes = dict()
+        for entry in data:
+            outcome = entry[-1]
+            if outcome not in outcomes:
+                outcomes[outcome] = 1
+            else:
+                outcomes[outcome] += 1
+        return_data = dict()
+        return_data['node'] = attributes[0]
+        return_data['paths'] = dict()
+        for line in data:
+            k, v = line[0], line[-1]
+            #print(k, v)
+            return_data['paths'][k] = v
+        if y == 'D':
+            #print('data', data)
+            #print('return_data paths', return_data['paths'])
+            exit(0)
+        return  return_data
+
 
     information_gain_dict = dict()
     for i in range(len(attributes)):
         attribute_index = i
         information_gain, entropy_dict = get_information_gain(data, attribute_index)
         information_gain_dict[attributes[attribute_index]] = {'information_gain': information_gain, 'entropy_dict': entropy_dict}
-        #print("Inforation gain for %s: %f" % (attributes[attribute_index], information_gain))
-    #print('\t', information_gain_dict)
-    #find highest information gain
+
     for node in information_gain_dict.keys():
         print('IG(%s)=%.4f ' % (node, information_gain_dict[node]['information_gain']), end='')
     print()
+
+
     max_information_gain = -1
     max_information_key = ''
     for attribute in information_gain_dict.keys():
@@ -205,10 +225,10 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str): #ne ko
             max_information_key = attribute
             max_information_gain = information_gain_dict[attribute]['information_gain']
             
-    #print('\n')
-    #print(*data, sep='\n')
-    #print('###### %s is max information key' % max_information_key)
-
+    #if set(information_gain_dict.keys()) == set(['B', 'C', 'D']):
+    #    print(max_information_key)
+    #    print('beppboop')
+    #    exit(0)
     #if max information gain is 0 then all atributes are the same,
 
     max_information_index = attributes.index(max_information_key)
@@ -216,24 +236,27 @@ def id3(data: list, data_parent: list, attributes: list, y: str, z: str): #ne ko
     subtrees = list()
     for child_attribute in information_gain_dict[max_information_key]['entropy_dict'].keys():
         new_data = filter_data(copy.deepcopy(data), max_information_index, child_attribute)
-        #if information_gain_dict[max_information_key]['entropy_dict'][child_attribute] == 0.0:
-        #    for entry in data:
-        #        if entry[max_information_index] == child_attribute:
-        #            result = entry[-1]
-        #            subtrees.append(child_attribute + ' -> ' + result)
-        #            break
-        #    #subtrees.append(child_attribute + ' -> ' + result)
-        #    return max_information_key 
-        #else:
-        #    result = str(id3(new_data, data, attributes, max_information_key))
-        #    subtrees.append(child_attribute + ' -> ' + result)
-        result_raw = id3(copy.deepcopy(new_data), copy.deepcopy(data), list(attributes), max_information_key, child_attribute)
 
+        result_raw = id3(copy.deepcopy(new_data), copy.deepcopy(data), list(attributes), max_information_key, child_attribute, depth)
         result = result_raw['node']
+        
+        #if 'paths' in result_raw:
+        #    #print('tree', tree)
+        #    #print('result_raw[\'paths\']', result_raw['paths'])
+        #    if result_raw['node'] == 'D':
+        #        print(result_raw)
+        #        print('banana')
+        #        if str(result_raw) != "{'node': 'D', 'paths': {'True': 'True', 'False': 'False'}}":
+        #            exit(0)
+        #    if result_raw['node'] not in tree:
+        #        tree[result_raw['node']] = dict()
+        #    tree[result_raw['node']].update(result_raw['paths'])
 
         if 'paths' in result_raw:
-            tree[result_raw['node']] = result_raw['paths']
-
+            if result_raw['node'] not in tree:
+                tree[result_raw['node']] = dict()
+                tree[result_raw['node']] = result_raw['paths']
+        
         subtrees.append(child_attribute + ' -> ' + result)
     #print(max_information_key, subtrees)
     return_data = dict()
@@ -295,17 +318,24 @@ def main():
     args = configure_parser_and_get_args()
     file_lines = load_file_lines(args.list_args[0])
 
+    try:
+        depth = int(args.list_args[2]) + 1
+    except:
+        depth = -2
+    depth = -2
     attributes = file_lines[0][:-1] # -1 is to cut off the last element (outcome)
     #print('attributes: ' + str(attributes))
     data = file_lines[1:]
 
-    result_raw = id3(data, data, list(attributes), 'ROOT', 'ROOT') # start the algorithm
+    result_raw = id3(data, data, list(attributes), 'ROOT', 'ROOT', depth) # start the algorithm
 
     if 'paths' in result_raw: # this is required only for adding the root node to the tree
         tree[result_raw['node']] = result_raw['paths']
+
     root = result_raw['node']
 	 
-    #pretty(tree)
+    pretty(tree)
+    print(tree)
     print('[BRANCHES]:')
     pretty_autograder(tree, root, 1, '')
 
@@ -315,15 +345,16 @@ def main():
 
     for line in test_file_lines:
         test_prediction(copy.deepcopy(line), tree, root, attributes)
-    print(result)
+    
    
     test_true_results = list()
     for line in test_file_lines:
         test_true_results.append(line[-1])
     
-    result = result.split()
     print(result)
-    print(test_true_results)
+    result = result.split()
+    #print(result)
+    #print(test_true_results)
     
     accurate = 0
     for i in range(len(result)):

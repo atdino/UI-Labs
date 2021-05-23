@@ -10,10 +10,10 @@ Skipping (python)
 === EVALUATION ===
 
 == ID3 ==
-  Passed 0 / 16 tests.
+  Passed 6 / 16 tests.
 
 === TOTAL RESULTS ===
-0 / 16 tests passed. (0.0%)
+6 / 16 tests passed. (37.5%)
 
 0123456789
 ================
